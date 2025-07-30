@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import AddTodoForm from '@/components/Addtodoform';
 import TodoItem from '@/components/Todoitem';
 
@@ -12,6 +12,23 @@ interface Todo {
 
 export default function TodoSheet() {
   const [todos, setTodos] = useState<Todo[]>([]);
+
+  useEffect(() => {
+    // Load todos from localStorage on client-side mount
+    if (typeof window !== 'undefined') {
+      const savedTodos = localStorage.getItem('todos');
+      if (savedTodos) {
+        setTodos(JSON.parse(savedTodos));
+      }
+    }
+  }, []); // Empty dependency array: runs once on mount
+
+  useEffect(() => {
+    // Save todos to localStorage whenever they change
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('todos', JSON.stringify(todos));
+    }
+  }, [todos]);
 
   const addTodo = (text: string) => {
     if (text.trim() === '') return;

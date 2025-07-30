@@ -8,6 +8,7 @@ interface Todo {
   id: number;
   text: string;
   completed: boolean;
+  dueDate: string | null;
 }
 
 export default function TodoSheet() {
@@ -34,9 +35,9 @@ export default function TodoSheet() {
     }
   }, [todos]);
 
-  const addTodo = (text: string) => {
+  const addTodo = (text: string, dueDate: string | null) => {
     if (text.trim() === '') return;
-    const newTodo: Todo = { id: Date.now(), text, completed: false };
+    const newTodo: Todo = { id: Date.now(), text, completed: false, dueDate };
     setTodos([...todos, newTodo]);
   };
 
@@ -50,10 +51,10 @@ export default function TodoSheet() {
     setTodos(todos.filter(todo => todo.id !== id));
   };
 
-  const editTodo = (id: number, newText: string) => {
+  const editTodo = (id: number, newText: string, newDueDate: string | null) => {
     if (newText.trim() === '') return; // Prevent empty edits
     setTodos(todos.map(todo =>
-      todo.id === id ? { ...todo, text: newText } : todo
+      todo.id === id ? { ...todo, text: newText, dueDate: newDueDate } : todo
     ));
   };
 

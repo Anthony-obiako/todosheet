@@ -50,9 +50,16 @@ export default function TodoSheet() {
     setTodos(todos.filter(todo => todo.id !== id));
   };
 
+  const editTodo = (id: number, newText: string) => {
+    if (newText.trim() === '') return; // Prevent empty edits
+    setTodos(todos.map(todo =>
+      todo.id === id ? { ...todo, text: newText } : todo
+    ));
+  };
+
   const deleteAllTodos = () => {
-    setTodos([]);
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && window.confirm('Are you sure you want to delete all tasks?')) {
+      setTodos([]);
       localStorage.removeItem('todos');
     }
   };
@@ -66,6 +73,7 @@ export default function TodoSheet() {
           onClick={deleteAllTodos}
           disabled={todos.length === 0}
           className="bg-red-500 text-white p-2 rounded disabled:bg-gray-300 disabled:cursor-not-allowed"
+          aria-label="Delete all tasks"
         >
           Delete All
         </button>
@@ -80,6 +88,7 @@ export default function TodoSheet() {
               todo={todo}
               onToggle={toggleTodo}
               onDelete={deleteTodo}
+              onEdit={editTodo}
             />
           ))}
         </ul>

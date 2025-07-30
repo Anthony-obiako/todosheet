@@ -18,7 +18,11 @@ export default function TodoSheet() {
     if (typeof window !== 'undefined') {
       const savedTodos = localStorage.getItem('todos');
       if (savedTodos) {
-        setTodos(JSON.parse(savedTodos));
+        try {
+          setTodos(JSON.parse(savedTodos));
+        } catch (error) {
+          console.error('Failed to parse todos from localStorage:', error);
+        }
       }
     }
   }, []); // Empty dependency array: runs once on mount
@@ -46,10 +50,26 @@ export default function TodoSheet() {
     setTodos(todos.filter(todo => todo.id !== id));
   };
 
+  const deleteAllTodos = () => {
+    setTodos([]);
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('todos');
+    }
+  };
+
   return (
     <div className="p-4 max-w-md mx-auto">
       <h1 className="text-2xl font-bold mb-4">To-Do Sheet</h1>
       <AddTodoForm onAdd={addTodo} />
+      <div className="mb-4">
+        <button
+          onClick={deleteAllTodos}
+          disabled={todos.length === 0}
+          className="bg-red-500 text-white p-2 rounded disabled:bg-gray-300 disabled:cursor-not-allowed"
+        >
+          Delete All
+        </button>
+      </div>
       {todos.length === 0 ? (
         <p className="text-gray-500">No to-dos yet.</p>
       ) : (

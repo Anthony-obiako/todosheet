@@ -9,12 +9,13 @@ export default function AddTodoForm({ onAdd }: AddTodoFormProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (text.trim() === '') return; // Prevent empty submissions
     onAdd(text);
-    setText('');
+    setText(''); // Clear input
   };
 
   return (
-    <div className="flex mb-4">
+    <form onSubmit={handleSubmit} className="flex mb-4">
       <input
         type="text"
         value={text}
@@ -23,11 +24,11 @@ export default function AddTodoForm({ onAdd }: AddTodoFormProps) {
         className="flex-grow p-2 border rounded-l"
       />
       <button
-        onClick={() => onAdd(text)}
+        type="submit"
         className="bg-blue-500 text-white p-2 rounded-r"
       >
         Add
       </button>
-    </div>
+    </form>
   );
 }
